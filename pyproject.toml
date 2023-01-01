@@ -15,11 +15,11 @@ authors = [
   { name = "Matthieu Perez", email = "me@email.com" },
 ]
 maintainers = [
-  { name = "The Scikit-HEP admins", email = "scikit-hep-admins@googlegroups.com" },
+  { name = "Someone else possibly", email = "other@email.com" },
 ]
-description = "là c'est la petite description du package skbuild_only"
-readme = "README.md"  # et là la longue description
-requires-python = ">=3.7"  # best if only minimal version is specified
+description = "A short description of the package comes here."
+readme = "README.md"  # The long description is in this file
+requires-python = ">=3.8"  # best if only minimal version is specified
 # list of valid classifiers: https://pypi.org/classifiers/
 #  At least put:
 #  - which version(s) of Python your package works on,
@@ -34,7 +34,6 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -44,7 +43,6 @@ classifiers = [
 ]
 # The project packages requirements
 dependencies = [
-  "typing_extensions >=3.7; python_version<'3.8'",  # type hints
 ]
 
 # Optional installations
@@ -56,7 +54,7 @@ test = [
 ]
 # For actively developping the package
 dev = [
-  "pipdeptree",
+  "pipx", "nox",  # to run scripts and common tasks
   "skbuild_only[test]",
 ]
 docs = [
@@ -80,6 +78,40 @@ write_to = "src/skbuild_only/_version.py"
 [tool.cibuildwheel]
 test-extras = ["test"]
 test-command = "pytest {project}/tests"
+
+[tool.flake8]
+extend-ignore = [
+  "E203",  # Whitespace before ':'
+  "E501",  # Line too long
+  "E722",  # Do not use bare except, specify exception instead
+  ]
+extend-select = [
+  "B902", #
+  "B903", #
+  "B904", #
+]
+exclude = [
+  "tests/*",
+  "noxfile.py",
+  ".venv/*",
+  "_skbuild/*",
+  "docs/*",
+  ".nox/*",
+]
+max-complexity = 10
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+# 'extend-exclude' excludes files or directories in addition to the defaults
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+(
+  ^/.nox/*  # one per line
+)
+'''
 
 
 [tool.pytest.ini_options]
@@ -115,18 +147,3 @@ ignore = [
 
 [tool.isort]
 profile = "black"
-
-
-[tool.pylint]
-py-version = "3.7"
-ignore-paths= ["src/skbuild_only/_version.py"]
-extension-pkg-allow-list = ["skbuild_only._core"]
-reports.output-format = "colorized"
-similarities.ignore-imports = "yes"
-messages_control.disable = [
-  "design",
-  "fixme",
-  "line-too-long",
-  "missing-module-docstring",
-  "wrong-import-position",
-]
