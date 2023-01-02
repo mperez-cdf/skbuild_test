@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "skbuild_only"  # you'll be able to pip install this name
 # version = "0.1.0"  # dynamic with setuptools_scm
 dynamic = ["version"]
-# Who is an author or a maintaner ? There's no official definition.
+# Who is an author or a maintainer ? There's no official definition.
 authors = [
   { name = "Matthieu Perez", email = "me@email.com" },
 ]
@@ -123,6 +123,9 @@ log_cli_level = "INFO"
 testpaths = [
   "tests",
 ]
+
+[tool.coverage.run]
+omit=["/skbuild_only/_version.py",]
 
 
 [tool.mypy]

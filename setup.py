@@ -16,7 +16,7 @@ from skbuild import setup
 
 # This file seems still necessary for now (scikit-build will be more and more independent of setuptools)
 # for the binary extension (C++ code) installation with pip install
-# note : some informations have to be duplicated here from the pyproject.toml, sorry
+# note : some information have to be duplicated here from the pyproject.toml, sorry
 setup(
     name="skbuild_only",
     packages=find_packages(where="src"),

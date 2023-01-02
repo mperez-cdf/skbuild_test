@@ -1,7 +1,10 @@
 # skbuild_only
 
-Note : always use inside a git environment for now because it uses setuptools_scm
-+ probablement envie de se débarasser de pylint.. quelle différence avec black ? préférer black ?
+Note : always use inside a git environment for now because it uses
+setuptools_scm
+
+- probablement envie de se débarasser de pylint.. quelle différence avec black ?
+  préférer black ?
 
 [![Actions Status][actions-badge]][actions-link]
 [![Documentation Status][rtd-badge]][rtd-link]
