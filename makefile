@@ -11,10 +11,22 @@ flake:
 	pipx run pyproject-flake8
 
 lint:
-	pipx run pre-commit run --all-files
+	pipx run pre-commit run --all-files --hook-stage manual
 
 simple_lint:
 	pipx run black src && pipx run isort src
 
-test:
+tests:
+	pip install .[test] && pytest
+
+coverage:
 	pip install .[test] && pytest --cov=skbuild_only
+
+install_precommit_hooks:
+	pipx run pre-commit install
+
+mypy:
+	pipx run mypy
+
+check-manifest:
+	pipx run check-manifest -c -v

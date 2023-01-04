@@ -34,7 +34,8 @@ FetchContent_Declare(
   pybind11
   URL https://github.com/pybind/pybind11/archive/refs/tags/v2.9.2.tar.gz
   URL_HASH
-    SHA256=6bd528c4dbe2276635dc787b6b1f2e5316cf6b49ee3e150264e455a0d68d19c1)
+    SHA256=6bd528c4dbe2276635dc787b6b1f2e5316cf6b49ee3e150264e455a0d68d19c1
+  DOWNLOAD_EXTRACT_TIMESTAMP true)
 
 FetchContent_MakeAvailable(pybind11) # include pybind11 and their variables
 # ======== Pybind11 acquired ==========

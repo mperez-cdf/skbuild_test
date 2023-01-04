@@ -1,6 +1,8 @@
 graft src
 graft tests
 
-include LICENSE README.md pyproject.toml setup.py setup.cfg
+include LICENSE README.md HISTORY.md pyproject.toml setup.py makefile
 global-exclude __pycache__ *.py[cod] .*
 include CMakeLists.txt
+
+exclude myReadMe.md

@@ -1,8 +1,10 @@
 [build-system]
 requires = [
-  "setuptools>=61.0",
-  "setuptools_scm[toml]>=3.4",
-  "scikit-build>=0.14",
+  "setuptools>=61.0",  # build system a bit outdated...
+  "setuptools_scm[toml]>=3.4",  # handle automatic versioning
+  "scikit-build>=0.14",  # Glue between setuptools and CMake
+  "cmake>=3.18",  # build system generator
+  "ninja",  # build system
 ]
 build-backend = "setuptools.build_meta"
 
@@ -81,16 +83,13 @@ test-command = "pytest {project}/tests"
 
 [tool.flake8]
 extend-ignore = [
-  "E203",  # Whitespace before ':'
+  # "E203",  # Whitespace before ':'
   "E501",  # Line too long
-  "E722",  # Do not use bare except, specify exception instead
+  # "E722",  # Do not use bare except, specify exception instead
   ]
-extend-select = [
-  "B902", #
-  "B903", #
-  "B904", #
+extend-select = [  # Extensions
 ]
-exclude = [
+exclude = [  # ignore these files
   "tests/*",
   "noxfile.py",
   ".venv/*",
@@ -113,6 +112,28 @@ extend-exclude = '''
 )
 '''
 
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+files = "src"
+python_version = "3.7"
+warn_unused_configs = true
+strict = true
+show_error_codes = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+warn_unreachable = true
+
+[tool.check-manifest]
+ignore = [
+  ".github/**",
+  "docs/**",
+  ".pre-commit-config.yaml",
+  ".readthedocs.yml",
+  "src/*/_version.py",
+  "src/*/*.so",
+  "noxfile.py",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -126,27 +147,3 @@ testpaths = [
 
 [tool.coverage.run]
 omit=["/skbuild_only/_version.py",]
-
-
-[tool.mypy]
-files = "src"
-python_version = "3.7"
-warn_unused_configs = true
-strict = true
-show_error_codes = true
-enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
-warn_unreachable = true
-
-
-[tool.check-manifest]
-ignore = [
-  ".github/**",
-  "docs/**",
-  ".pre-commit-config.yaml",
-  ".readthedocs.yml",
-  "src/*/_version.py",
-  "noxfile.py",
-]
-
-[tool.isort]
-profile = "black"
