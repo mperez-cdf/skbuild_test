@@ -1,7 +1,6 @@
 [build-system]
 requires = [
   "setuptools>=61.0",  # build system a bit outdated...
-  "setuptools_scm[toml]>=3.4",  # handle automatic versioning
   "scikit-build>=0.14",  # Glue between setuptools and CMake
   "cmake>=3.18",  # build system generator
   "ninja",  # build system
@@ -10,8 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "skbuild_only"  # you'll be able to pip install this name
-# version = "0.1.0"  # dynamic with setuptools_scm
-dynamic = ["version"]
+version = "0.1.0"
 # Who is an author or a maintainer ? There's no official definition.
 authors = [
   { name = "Matthieu Perez", email = "me@email.com" },
@@ -25,8 +23,8 @@ requires-python = ">=3.8"  # best if only minimal version is specified
 # list of valid classifiers: https://pypi.org/classifiers/
 #  At least put:
 #  - which version(s) of Python your package works on,
-#  - which license your package is available under,
 #  - which operating systems your package will work on.
+#  - which license your package is available under,
 classifiers = [
   "Development Status :: 1 - Planning",
   "Intended Audience :: Science/Research",
@@ -64,6 +62,7 @@ docs = [
   "myst_parser>=0.13",
   "sphinx-book-theme>=0.1.0",
   "sphinx_copybutton",
+  "sphinx_autoapi",
 ]
 
 [project.urls]
@@ -71,10 +70,6 @@ Homepage = "https://github.com/Scikit-HEP/setuptools621"
 "Bug Tracker" = "https://github.com/Scikit-HEP/setuptools621/issues"
 Discussions = "https://github.com/Scikit-HEP/setuptools621/discussions"
 Changelog = "https://github.com/Scikit-HEP/setuptools621/releases"
-
-
-[tool.setuptools_scm]
-write_to = "src/skbuild_only/_version.py"
 
 
 [tool.cibuildwheel]

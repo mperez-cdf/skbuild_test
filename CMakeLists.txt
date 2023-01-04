@@ -40,8 +40,38 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(pybind11) # include pybind11 and their variables
 # ======== Pybind11 acquired ==========
 
+
 # Now we create a _core target python module thanks to source code at
-# src/main.cpp
-pybind11_add_module(_core MODULE src/main.cpp)
+# src/cpp exposed in src/pybind
+pybind11_add_module(_core MODULE src/pybind/main.cpp src/cpp/my_lib.cpp src/cpp/my_lib.h)
+# Note: the headers are not in fact needed.
+
+
+# === Find and link a C++ library (example, not necessary) ===
+# If you want to use external libraries in your C++ code
+# and python module by extension...
+
+# add directory with macros : we put a FindGLFW3.cmake in the directory cmake
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+
+# Find required librairy
+find_package(GLFW3 3.3 REQUIRED)
+
+# Hopefully, GLFW3 is found by CMake,
+# if it is installed in your system of course.
+
+# find_package by convention will create several variables:
+# - <LIB>_FOUND
+# - <LIB>_LIBRARIES
+# - <LIB>_INCLUDE_DIR
+if(GLFW_FOUND)
+  include_directories(${GLFW_INCLUDE_DIR}) # Add include directories
+  target_link_libraries (_core PRIVATE ${GLFW_LIBRARIES}) # link GLFW libraries
+else()
+  # Normally the failure to find GLFW3 is handled in FindGLFW3.cmake...
+  message(FATAL_ERROR "GLFW not found ! Exiting...")
+endif()
+# ============================================================
+
 # Install the _core.so python module
 install(TARGETS _core DESTINATION .)

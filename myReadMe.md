@@ -40,18 +40,18 @@ This skeleton includes two "task runners".
 
 ### Make
 
-- `make clean`: remove some development artefacts
-- `make requirements`: create a requirements.txt file
-- `make lock_file`: create a locked-requirements.txt
-- `make flake`: run flake on the project
-- `make lint`: run all the pre-commit hooks
-- `make simple_lint`: run black and isort
-- `make install_precommit_hooks`: install the precommit hooks to git
-- `make mypy`: run the static type checker
-- `make check-manifest`: run the manifest checker
-- `make tests`: install the package (check that you are in the right virtual
+- `make -B clean`: remove some development artefacts
+- `make -B requirements`: create a requirements.txt file
+- `make -B lock_file`: create a locked-requirements.txt
+- `make -B flake`: run flake on the project
+- `make -B lint`: run all the pre-commit hooks
+- `make -B simple_lint`: run black and isort
+- `make -B install_precommit_hooks`: install the precommit hooks to git
+- `make -B mypy`: run the static type checker
+- `make -B check-manifest`: run the manifest checker
+- `make -B tests`: install the package (check that you are in the right virtual
   environment first !) and launch tests.
-- `make coverage`: install the package (check that you are in the right virtual
+- `make -B coverage`: install the package (check that you are in the right virtual
   environment first !) and launch tests and coverage.
 
 ### Nox
@@ -142,12 +142,11 @@ Coverage configuration is in the tool.coverage.run array of pyproject.toml.
 
 To install this package, we use scikit-build. This tool can create Python packages as well as "binary extensions", ie. C++ code exposed in a Python module. For C++ code, it uses CMake to create a build system and then compile the C++ code. A main way to provide a Python module is to use Pybind11. The CMakeLists.txt demonstrates how to download automatically Pybind11 and create a Python module from C++ code.
 
+
 # Not yet tested
 
-- documentation with sphinx
+- documentation with sphinx (what is pbdoc on pybind11 example ?)
 - documentation on readthedocs
-- other thing than setuptools_scm (deprecation soon ?) or documentation on ho
-  setuptools_scm work
 - nox build (work with C++ ? don't know, should test)
 - git(hub, lab) actions, cibuildwheels
 - build & twine (first to gitlab repo)

@@ -4,11 +4,8 @@ Copyright (c) 2022 Matthieu Perez. All rights reserved.
 skbuild_only: Scikit build project descriptionnnnn
 """
 
-from __future__ import annotations
-
-__version__ = version = "0.1.0"
-__version_tuple__ = version_tuple = (0, 1, 0)
+# read version from installed package
+from importlib.metadata import version
+__version__ = version(__name__)
 
 __all__ = ("__version__",)
-
-coucou = 4
