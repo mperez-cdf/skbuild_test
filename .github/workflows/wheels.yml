@@ -43,8 +43,7 @@ jobs:
           fetch-depth: 0
 
       - name: install dependency
-        run: |
-          apt-get install glfw3
+        run: sudo apt-get install glfw3
 
       - uses: pypa/cibuildwheel@v2.11.4
 
