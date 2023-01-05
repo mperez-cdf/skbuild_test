@@ -123,9 +123,9 @@ warn_unreachable = true
 ignore = [
   ".github/**",
   "docs/**",
+  "_skbuild/**",
   ".pre-commit-config.yaml",
   ".readthedocs.yml",
-  "src/*/_version.py",
   "src/*/*.so",
   "noxfile.py",
 ]
