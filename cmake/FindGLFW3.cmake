@@ -116,6 +116,7 @@ else()
     # (*)NIX
 
     find_package(Threads REQUIRED)
+    find_library(xrandr NAMES Xrandr)
 
     if(NOT NO_GLFW_X11)
       find_package(X11 REQUIRED)
