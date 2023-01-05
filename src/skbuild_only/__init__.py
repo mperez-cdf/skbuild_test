@@ -7,7 +7,7 @@ skbuild_only: Scikit build project descriptionnnnn
 from __future__ import annotations
 
 # read version from installed package
-from importlib.metadata import version  # type: ignore
+from importlib.metadata import version  # type: ignore[import]
 
 __version__ = version(__name__)
 

@@ -55,12 +55,13 @@ def lint(session: nox.Session, manual_stage) -> None:
     else:
         session.run("pre-commit", "run", "--all-files")
 
+
 @nox.session
 def stubgen(session: nox.Session) -> None:
     """Generate stub type file for mypy from the generated C++ module"""
     session.install(".[dev]")
     session.install("mypy")
-    session.run("stubgen")
+    session.run("stubgen", "-m", "skbuild_only._core", "-o", "src")
 
 
 @nox.session
