@@ -27,43 +27,36 @@ a folder with the compile .so extension. Copy this .so file in your src folder.
 Then you can go back to using editable mode for the python part with
 `pip install -e ".[dev]"`.
 
-# Tools
+# Compilation
 
-## Task runners
+To install this package, we use scikit-build. This tool can create Python
+packages as well as "binary extensions", ie. C++ code exposed in a Python
+module. For C++ code, it uses CMake to create a build system and then compile
+the C++ code. A main way to provide a Python module is to use Pybind11. The
+CMakeLists.txt demonstrates how to download automatically Pybind11 and create a
+Python module from C++ code.
 
-This skeleton includes two "task runners".
+# Task runner: Nox
 
-- Make for simple things,
-- Nox for pythons scripts (to be preferred, but it might be too slow for
-  repetitive tasks) They allow to perform various development tasks without the
-  need to remember complex commands.
+Nox is a task runner. It automates common development tasks. Tasks are named
+"sessions" in Nox. They are defined in the file `noxfile.py`.
 
-### Make
+To list all existing sessions: `pipx run nox -l`
 
-- `make -B clean`: remove some development artefacts
-- `make -B requirements`: create a requirements.txt file
-- `make -B lock_file`: create a locked-requirements.txt
-- `make -B flake`: run flake on the project
-- `make -B lint`: run all the pre-commit hooks
-- `make -B simple_lint`: run black and isort
-- `make -B install_precommit_hooks`: install the precommit hooks to git
-- `make -B mypy`: run the static type checker
-- `make -B check-manifest`: run the manifest checker
-- `make -B tests`: install the package (check that you are in the right virtual
-  environment first !) and launch tests.
-- `make -B coverage`: install the package (check that you are in the right
-  virtual environment first !) and launch tests and coverage.
+## Annotations sessions
 
-### Nox
+Static types are more and more used in python codes and allow to catch bugs
+early and to produce well-thought codes. `mypy` is a static type checker: when
+run, it will check that the type you annotated are coherent.
 
-- `pipx run nox -l`: list all the possible nox sessions
-- `pipx run nox -s lint`: run all the pre-commit hooks
-- `pipx run nox -s simple_lint`: run black and isort
-- `pipx run nox -s tests`: run the tests (no coverage)
-- `pipx run nox -s coverage`: run the tests and show coverage
-- `pipx run nox -s docs`: build the docs
+To run mypy, use `pipx run nox -s mypy`. It's configuration is in the tool.mypy
+array of pyproject.toml.
 
-## linters
+When you use a C++ extension module, you have to create a stub file annotating
+the C++ extension module. To create this stub file, use
+`pipx run nox -s stubgen`.
+
+## Code quality sessions
 
 To ensure this code respect coding conventions, we use a couple of "linters".
 Some directly modify your files, other will just point out things that you
@@ -77,11 +70,12 @@ quality code.
 
 Its configuration is in the file `.pre-commit-config.yaml`.
 
-You can run all the pre-commit hooks at anytime with `make lint` or
-`pipx run nox -s lint`.
+You can run all the pre-commit hooks at anytime with
+`pipx run nox -s "precommit_checks(manual_stage=False)"`. From time to time,
+change manual_stage to True to run more checks.
 
 To install the hooks, so that they run before every commit, use
-`make install_precommit_hooks`.
+`pipx run nox -s install_precommit_hooks`.
 
 ### Flake8
 
@@ -90,67 +84,60 @@ detect blank lines with white spaces, the use of a bare except (it is
 recommended to specify directly the exception you want to take care of)... It's
 configuration is in the tool.flake8 array of pyproject.toml.
 
-`make flake` runs this tool.
+`pipx run nox -s flake` runs this tool.
 
 ### Black
 
 Black modifies your files to respect formatting conventions. It's configuration
 is in the tool.black array of pyproject.toml.
 
-`make simple_lint` or `pipx run nox -s simple_lint` will run black and isort.
+`pipx run nox -s lint` will run black and isort.
 
 ### isort
 
 Isort is a tool to sort your import statements. It's configuration is in the
 tool.isort array of pyproject.toml.
 
-`make simple_lint` or `pipx run nox -s simple_lint` will run black and isort.
+`pipx run nox -s lint` will run black and isort.
 
-## Static type checker
+## Test sessions
 
-Static types are more and more used in python codes and allow to catch bugs
-early and to produce well-thought codes. `mypy` is a static type checker: when
-run, it will check that the type you annotated are coherent.
+To perform tests on your code, you can use pytest. It will detect every function
+with a name beginning with "test\_" in the "tests" directory.
 
-To run mypy, use `make mypy`. It's configuration is in the tool.mypy array of
-pyproject.toml.
+To run all the tests, use `pipx run nox -s tests`. Furthermore, to run all the
+tests and have a coverage report, use `pipx run nox -s coverage`.
 
-## Manifest checker
+Pytest configuration is in the tool.pytest.ini_options array of pyproject.toml.
+Coverage configuration is in the tool.coverage.run array of pyproject.toml.
+
+**Note:** you can add a '-r' at the end of a nox command to re-use the same
+virtual environment. The tests will run faster.
+
+## Documentation sessions
+
+See the docs/ directory. Build documentation with `pipx run nox -s docs`. It
+uses sphinx to generate the documentation.
+
+To serve locally the documentation, you can use `pipx run nox -s docs -- serve`.
+
+**Note:** For small modifications, you can use `-R` at the end of a nox command
+to re-user the same virtual environment and skip the installation part. checker
+
+## Build sessions
+
+### Manifest checker
 
 The MANIFEST.in can be used to add essential non-python files to your package.
 Before uploading your package anywhere, it's a good idea to run check-manifest,
 which will list the source files under version control not included in your
 MANIFEST.in.
 
-To run check-manifest, use `make check-manifest`. By default this will not
-update automatically the MANIFEST.in file, but only show you files you might
-have forgotten.
+To run check-manifest, use `pipx run nox -s check_manifest`. By default this
+will not update automatically the MANIFEST.in file, but only show you files you
+might have forgotten.
 
-## Test suite
-
-To perform tests on your code, you can use pytest. It will detect every function
-with a name beginning with "test\_" in the "tests" directory.
-
-To run all the tests, use `make tests` or `pipx run nox -s tests`. Furthermore,
-to run all the tests and have a coverage report, use `make coverage` or
-`pipx run nox -s coverage`.
-
-Pytest configuration is in the tool.pytest.ini_options array of pyproject.toml.
-Coverage configuration is in the tool.coverage.run array of pyproject.toml.
-
-# Compilation
-
-To install this package, we use scikit-build. This tool can create Python
-packages as well as "binary extensions", ie. C++ code exposed in a Python
-module. For C++ code, it uses CMake to create a build system and then compile
-the C++ code. A main way to provide a Python module is to use Pybind11. The
-CMakeLists.txt demonstrates how to download automatically Pybind11 and create a
-Python module from C++ code.
-
-# Documentation
-
-See the docs/ directory. Build documentation with `nox -s docs`. It uses sphinx
-to generate the documentation.
+It's always a good idea to run check-manifest before building your package.
 
 # Not yet tested
 

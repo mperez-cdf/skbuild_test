@@ -19,6 +19,6 @@ The README.md can be included:
 
 usage.md
 autoapi/index
-core_module.md
+core_module.rst
 history.md
 ```

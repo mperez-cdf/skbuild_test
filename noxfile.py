@@ -7,47 +7,46 @@ import nox
 
 DIR = Path(__file__).parent.resolve()
 
-nox.options.sessions = ["lint", "tests", "coverage"]
+nox.options.sessions = ["lint", "coverage"]
 
 
-@nox.session(python=False)
-def clean(session: nox.Session) -> None:
-    folders = [
-        ".nox",
-        "_skbuild",
-        "__pycache__",
-        ".pytest_cache",
-        ".coverage",
-        ".mypy_cache",
-    ]
-    for folder in folders:
-        session.run("rm", "-rf", folder)
+@nox.session(tags=["annotations"], reuse_venv=True)
+def stubgen(session: nox.Session) -> None:
+    """(annotations) Generate stub type file for mypy from the generated C++ module"""
+    session.install(".[dev]")
+    session.install("mypy")
+    session.run("stubgen", "-m", "skbuild_only._core", "-o", "src")
 
 
-@nox.session(python=False)
-def requirements(session: nox.Session) -> None:
-    session.run(
-        "sh",
-        "-c",
-        r"pipx run pipdeptree -f --warn silence | grep -E '^[a-zA-Z0-9\-]+' | tee requirements.txt",
-    )
+@nox.session(python=False, tags=["annotations"])
+def mypy(session: nox.Session) -> None:
+    """(annotations) Run mypy"""
+    session.run("pipx", "run", "mypy")
 
 
-@nox.session(python=False)
-def lock_file(session: nox.Session) -> None:
-    session.run("sh", "-c", "pipx run pipdeptree -f | tee locked-requirements.txt")
+@nox.session(python=False, tags=["style", "fix"])
+def lint(session: nox.Session) -> None:
+    """
+    (quality) Run Black and isort.
+    """
+    # This needs to be installed into the package environment, and is slower
+    # than a pre-commit check
+    session.run("pipx", "run", "black", "src", *session.posargs)
+    session.run("pipx", "run", "isort", "src", *session.posargs)
 
 
-@nox.session(python=False)
+@nox.session(python=False, tags=["style"])
 def flake(session: nox.Session) -> None:
+    """(quality) Run Flake8"""
     session.run("pipx", "run", "pyproject-flake8")
 
 
-@nox.session
+@nox.session(tags=["full fix and style"])
 @nox.parametrize("manual_stage", [True, False])
-def lint(session: nox.Session, manual_stage) -> None:
+def precommit_checks(session: nox.Session, manual_stage) -> None:
     """
-    Run the linter. Will be a bit long the first time only.
+    (quality) Run all linters. Will be a bit long the first time only.
+    Manual stage : check-manifest
     """
     session.install("pre-commit")
     if manual_stage:
@@ -57,30 +56,9 @@ def lint(session: nox.Session, manual_stage) -> None:
 
 
 @nox.session
-def stubgen(session: nox.Session) -> None:
-    """Generate stub type file for mypy from the generated C++ module"""
-    session.install(".[dev]")
-    session.install("mypy")
-    session.run("stubgen", "-m", "skbuild_only._core", "-o", "src")
-
-
-@nox.session
-def simple_lint(session: nox.Session) -> None:
-    """
-    Run Black and isort.
-    """
-    # This needs to be installed into the package environment, and is slower
-    # than a pre-commit check
-    session.install(".", "black")
-    session.install(".", "isort")
-    session.run("black", "src", *session.posargs)
-    session.run("isort", "src", *session.posargs)
-
-
-@nox.session
 def tests(session: nox.Session) -> None:
     """
-    Run the unit and regular tests.
+    (test) Run tests.
     """
     session.install(".[test]")
     session.run("pytest", *session.posargs)
@@ -89,7 +67,7 @@ def tests(session: nox.Session) -> None:
 @nox.session
 def coverage(session: nox.Session) -> None:
     """
-    Run tests and compute coverage.
+    (test) Run tests and show coverage.
     """
 
     session.posargs.append("--cov=skbuild_only")
@@ -101,7 +79,7 @@ def coverage(session: nox.Session) -> None:
 @nox.session
 def docs(session: nox.Session) -> None:
     """
-    Build the docs. Pass "serve" to serve.
+    (docs) Build the docs. Pass "serve" to serve.
     """
 
     session.install(".[docs]")
@@ -116,10 +94,16 @@ def docs(session: nox.Session) -> None:
             session.warn("Unsupported argument to docs")
 
 
+@nox.session(python=False)
+def check_manifest(session: nox.Session) -> None:
+    """(build) Run check-manifest"""
+    session.run("pipx", "run", "check-manifest", "-c", "-v")
+
+
 @nox.session
 def build(session: nox.Session) -> None:
     """
-    Build an SDist and wheel.
+    (build) Build an SDist and wheel.
     """
 
     build_p = DIR.joinpath("build")
@@ -128,3 +112,42 @@ def build(session: nox.Session) -> None:
 
     session.install("build")
     session.run("python", "-m", "build")
+
+
+@nox.session(python=False)
+def requirements(session: nox.Session) -> None:
+    """Generate a requirements.txt file."""
+    session.run(
+        "sh",
+        "-c",
+        r"pipx run pipdeptree -f --warn silence | grep -E '^[a-zA-Z0-9\-]+' | tee requirements.txt",
+    )
+
+
+@nox.session(python=False)
+def lock_file(session: nox.Session) -> None:
+    """Generate a locked-requirements.txt file."""
+    session.run("sh", "-c", "pipx run pipdeptree -f | tee locked-requirements.txt")
+
+
+@nox.session(python=False)
+def clean(session: nox.Session) -> None:
+    """Delete cache folders and files."""
+    folders = [
+        ".nox",
+        "_skbuild",
+        "__pycache__",
+        ".pytest_cache",
+        ".coverage",
+        ".mypy_cache",
+        "docs/_build",
+        "docs/_generate",
+    ]
+    for folder in folders:
+        session.run("rm", "-rf", folder)
+
+
+@nox.session(python=False)
+def install_precommit_hooks(session: nox.Session) -> None:
+    """(installation) Install the pre-commit hooks."""
+    session.run("pipx", "run", "pre-commit", "install")
