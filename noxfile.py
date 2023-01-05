@@ -5,8 +5,6 @@ from pathlib import Path
 
 import nox
 
-DIR = Path(__file__).parent.resolve()
-
 nox.options.sessions = ["lint", "coverage"]
 
 
@@ -100,10 +98,13 @@ def check_manifest(session: nox.Session) -> None:
     session.run("pipx", "run", "check-manifest", "-c", "-v")
 
 
-@nox.session
+DIR = Path(__file__).parent.resolve()
+
+
+@nox.session(python=["3.8", "3.9", "3.10", "3.11"])
 def build(session: nox.Session) -> None:
     """
-    (build) Build an SDist and wheel.
+    (build) Build an SDist and wheel, locally.
     """
 
     build_p = DIR.joinpath("build")
