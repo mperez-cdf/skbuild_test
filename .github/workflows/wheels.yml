@@ -35,12 +35,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest] #, macos-latest]
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: install dependency
+        run: |
+          apt-get install glfw3
 
       - uses: pypa/cibuildwheel@v2.11.4
 
