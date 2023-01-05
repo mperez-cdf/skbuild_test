@@ -3,7 +3,7 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-#include "../cpp/my_lib.h"  // To find add and test_glfw functions
+#include "../cpp/my_lib.h" // To find add and test_glfw functions
 
 PYBIND11_MODULE(_core, m) {
   m.doc() = R"pbdoc(

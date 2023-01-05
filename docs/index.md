@@ -1,4 +1,3 @@
-
 # Welcome to documentation!
 
 ## Introduction
@@ -8,6 +7,7 @@ This is the landing page of the documentation.
 The README.md can be included:
 
 ```{include} ../README.md
+
 ```
 
 ```{toctree}

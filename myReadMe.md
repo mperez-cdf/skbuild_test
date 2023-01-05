@@ -51,8 +51,8 @@ This skeleton includes two "task runners".
 - `make -B check-manifest`: run the manifest checker
 - `make -B tests`: install the package (check that you are in the right virtual
   environment first !) and launch tests.
-- `make -B coverage`: install the package (check that you are in the right virtual
-  environment first !) and launch tests and coverage.
+- `make -B coverage`: install the package (check that you are in the right
+  virtual environment first !) and launch tests and coverage.
 
 ### Nox
 
@@ -126,26 +126,34 @@ To run check-manifest, use `make check-manifest`. By default this will not
 update automatically the MANIFEST.in file, but only show you files you might
 have forgotten.
 
-
 ## Test suite
 
-To perfom tests on your code, you can use pytest. It will detect every function with a name beginning with "test_" in the "tests" directory.
+To perform tests on your code, you can use pytest. It will detect every function
+with a name beginning with "test\_" in the "tests" directory.
 
-To run all the tests, use `make tests` or `pipx run nox -s tests`.
-Furthermore, to run all the tests and have a coverage report, use `make coverage` or `pipx run nox -s coverage`.
+To run all the tests, use `make tests` or `pipx run nox -s tests`. Furthermore,
+to run all the tests and have a coverage report, use `make coverage` or
+`pipx run nox -s coverage`.
 
 Pytest configuration is in the tool.pytest.ini_options array of pyproject.toml.
 Coverage configuration is in the tool.coverage.run array of pyproject.toml.
 
-
 # Compilation
 
-To install this package, we use scikit-build. This tool can create Python packages as well as "binary extensions", ie. C++ code exposed in a Python module. For C++ code, it uses CMake to create a build system and then compile the C++ code. A main way to provide a Python module is to use Pybind11. The CMakeLists.txt demonstrates how to download automatically Pybind11 and create a Python module from C++ code.
+To install this package, we use scikit-build. This tool can create Python
+packages as well as "binary extensions", ie. C++ code exposed in a Python
+module. For C++ code, it uses CMake to create a build system and then compile
+the C++ code. A main way to provide a Python module is to use Pybind11. The
+CMakeLists.txt demonstrates how to download automatically Pybind11 and create a
+Python module from C++ code.
 
+# Documentation
+
+See the docs/ directory. Build documentation with `nox -s docs`. It uses sphinx
+to generate the documentation.
 
 # Not yet tested
 
-- documentation with sphinx (what is pbdoc on pybind11 example ?)
 - documentation on readthedocs
 - nox build (work with C++ ? don't know, should test)
 - git(hub, lab) actions, cibuildwheels

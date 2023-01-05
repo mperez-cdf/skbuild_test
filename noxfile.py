@@ -10,13 +10,57 @@ DIR = Path(__file__).parent.resolve()
 nox.options.sessions = ["lint", "tests", "coverage"]
 
 
+@nox.session(python=False)
+def clean(session: nox.Session) -> None:
+    folders = [
+        ".nox",
+        "_skbuild",
+        "__pycache__",
+        ".pytest_cache",
+        ".coverage",
+        ".mypy_cache",
+    ]
+    for folder in folders:
+        session.run("rm", "-rf", folder)
+
+
+@nox.session(python=False)
+def requirements(session: nox.Session) -> None:
+    session.run(
+        "sh",
+        "-c",
+        r"pipx run pipdeptree -f --warn silence | grep -E '^[a-zA-Z0-9\-]+' | tee requirements.txt",
+    )
+
+
+@nox.session(python=False)
+def lock_file(session: nox.Session) -> None:
+    session.run("sh", "-c", "pipx run pipdeptree -f | tee locked-requirements.txt")
+
+
+@nox.session(python=False)
+def flake(session: nox.Session) -> None:
+    session.run("pipx", "run", "pyproject-flake8")
+
+
 @nox.session
-def lint(session: nox.Session) -> None:
+@nox.parametrize("manual_stage", [True, False])
+def lint(session: nox.Session, manual_stage) -> None:
     """
     Run the linter. Will be a bit long the first time only.
     """
     session.install("pre-commit")
-    session.run("pre-commit", "run", "--all-files", *session.posargs)
+    if manual_stage:
+        session.run("pre-commit", "run", "--all-files", "--hook-stage", "manual")
+    else:
+        session.run("pre-commit", "run", "--all-files")
+
+@nox.session
+def stubgen(session: nox.Session) -> None:
+    """Generate stub type file for mypy from the generated C++ module"""
+    session.install(".[dev]")
+    session.install("mypy")
+    session.run("stubgen")
 
 
 @nox.session

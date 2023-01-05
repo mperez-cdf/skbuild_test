@@ -1,8 +1,8 @@
 graft src
 graft tests
 
-include LICENSE README.md HISTORY.md pyproject.toml setup.py makefile
-global-exclude __pycache__ *.py[cod] .*
+include LICENSE README.md HISTORY.md pyproject.toml setup.py makefile cmake/FindGLFW3.cmake
+global-exclude __pycache__ *.py[cod] .* _skbuild/*
 include CMakeLists.txt
 
 exclude myReadMe.md

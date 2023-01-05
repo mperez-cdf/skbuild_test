@@ -1,5 +1,7 @@
 """Pure python module in the package"""
 
+from __future__ import annotations
+
 import skbuild_only._core as m
 
 

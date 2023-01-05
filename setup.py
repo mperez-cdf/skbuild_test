@@ -12,15 +12,21 @@
 from __future__ import annotations
 
 from setuptools import find_packages
-from skbuild import setup  # note: we use the setup function from skbuild, not setuptools !
+from skbuild import (  # note: we use the setup function from skbuild, not setuptools !
+    setup,
+)
 
 # This file seems still necessary for now (scikit-build will be more and more independent of setuptools)
 # for the binary extension (C++ code) installation with pip install
 # note : some information have to be duplicated here from the pyproject.toml, sorry
 setup(
     name="skbuild_only",  # package name
-    packages=find_packages(where="src"),  # Explicit list of all packages to include in the distribution.
-    package_dir={"": "src"},  #  A mapping of package to directory names
+    packages=find_packages(
+        where="src"
+    ),  # Explicit list of all packages to include in the distribution.
+    package_dir={"": "src"},  # A mapping of package to directory names
     cmake_install_dir="src/skbuild_only",  # relative directory where the CMake artifacts are installed. By default, it is set to an empty string.
-    package_data={"skbuild_only": ["py.typed"]},  # A dictionary mapping package names to lists of glob patterns. For a complete description and examples, see the setuptools documentation section on Including Data Files.
+    package_data={
+        "skbuild_only": ["py.typed"]
+    },  # A dictionary mapping package names to lists of glob patterns. For a complete description and examples, see the setuptools documentation section on Including Data Files.
 )
