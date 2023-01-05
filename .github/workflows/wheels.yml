@@ -43,7 +43,9 @@ jobs:
           fetch-depth: 0
 
       - name: install dependency
-        run: sudo apt-get install libglfw3 libglfw3-dev libxrandr-dev
+        run: |
+          sudo apt update
+          sudo apt install libglfw3 libglfw3-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev
 
       - uses: pypa/cibuildwheel@v2.11.4
 
